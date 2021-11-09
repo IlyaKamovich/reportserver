@@ -1,0 +1,122 @@
+[
+  {
+    "targetolog": "Alex",
+    "date": "2021-11-04",
+    "metrics": {
+      "conversions": 3.74,
+      "cpi": 2.2
+    }
+  },
+  {
+    "targetolog": "LIZA",
+    "date": "2021-11-04",
+    "metrics": {
+      "conversions": 2.35,
+      "cpi": 0.15
+    }
+  },
+  {
+    "targetolog": "Sanya",
+    "date": "2021-11-04",
+    "metrics": {
+      "conversions": 1.15,
+      "cpi": 1.1
+    }
+  },
+  {
+    "targetolog": "Pasha",
+    "date": "2021-11-04",
+    "metrics": {
+      "conversions": 1.19,
+      "cpi": 3.5
+    }
+  },
+  {
+    "targetolog": "Evgeniy",
+    "date": "2021-11-04",
+    "metrics": {
+      "conversions": 6.35,
+      "cpi": 1.2
+    }
+  },
+  {
+    "targetolog": "Alex",
+    "date": "2021-11-05",
+    "metrics": {
+      "conversions": 2.14,
+      "cpi": 1.2
+    }
+  },
+  {
+    "targetolog": "LIZA",
+    "date": "2021-11-05",
+    "metrics": {
+      "conversions": 4.35,
+      "cpi": 1.25
+    }
+  },
+  {
+    "targetolog": "Sanya",
+    "date": "2021-11-05",
+    "metrics": {
+      "conversions": 3.15,
+      "cpi": 1.5
+    }
+  },
+  {
+    "targetolog": "Pasha",
+    "date": "2021-11-05",
+    "metrics": {
+      "conversions": 6.19,
+      "cpi": 7.5
+    }
+  },
+  {
+    "targetolog": "Evgeniy",
+    "date": "2021-11-05",
+    "metrics": {
+      "conversions": 3.35,
+      "cpi": 4.2
+    }
+  },
+  {
+    "targetolog": "Alex",
+    "date": "2021-11-06",
+    "metrics": {
+      "conversions": 3.74,
+      "cpi": 0.7
+    }
+  },
+  {
+    "targetolog": "LIZA",
+    "date": "2021-11-06",
+    "metrics": {
+      "conversions": 12.35,
+      "cpi": 9.15
+    }
+  },
+  {
+    "targetolog": "Sanya",
+    "date": "2021-11-06",
+    "metrics": {
+      "conversions": 5.15,
+      "cpi": 6.33
+    }
+  },
+  {
+    "targetolog": "Pasha",
+    "date": "2021-11-06",
+    "metrics": {
+      "conversions": 1.19,
+      "cpi": 7.5
+    }
+  },
+  {
+    "targetolog": "Evgeniy",
+    "date": "2021-11-06",
+    "metrics": {
+      "conversions": 9.35,
+      "cpi": 4.25
+    }
+  }
+]
