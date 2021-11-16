@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
-
 const Schema = mongoose.Schema;
 
-const TargetologReportsSchema = new Schema({
-  targetolog: String,
+const ReportSchema = new Schema({
   date: Date,
+  targetologId: { type: Schema.Types.ObjectId, ref: "targetolog" },
   metrics: {
     conversions: Number,
     cpi: Number,
   },
 });
 
-const TargetologReports = mongoose.model("TargetologReports", TargetologReportsSchema);
+const Report = mongoose.model("reports", ReportSchema);
 
-export { TargetologReports };
+export { Report };

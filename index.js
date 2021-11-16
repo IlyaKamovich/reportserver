@@ -1,8 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import { TargetologReports } from "./models/reports.js";
+import { Report } from "./models/reports.js";
+import { createTargetolog } from "./controllers/targetologController.js";
+import { createReport, getReports } from "./controllers/reportController.js";
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 5000;
 
 app.use((req, res, next) => {
@@ -11,8 +14,16 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post("/createTargetolog", createTargetolog);
+app.post("/createReport", createReport);
+
+//new
+app.get("/getReports", getReports);
+
+//old
 app.get("/reports", async (req, res, next) => {
-  TargetologReports.find({}).then((reports) => res.status(200).json({ reports }));
+  const reports = await Report.find({});
+  res.status(200).json({ reports });
 });
 
 const start = async () => {
