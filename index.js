@@ -1,12 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import { Report } from "./models/reports.js";
-import { createTargetolog } from "./controllers/targetologController.js";
-import { createReport, getReports } from "./controllers/reportController.js";
+import reportRoutes from "./routes/report.route.js";
+import targetologRoutes from "./routes/targetolog.route.js";
 
 const app = express();
-app.use(express.json());
 const port = process.env.PORT || 5000;
+app.use(express.json());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -14,17 +13,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/createTargetolog", createTargetolog);
-app.post("/createReport", createReport);
-
-//new
-app.get("/getReports", getReports);
-
-//old
-app.get("/reports", async (req, res, next) => {
-  const reports = await Report.find({});
-  res.status(200).json({ reports });
-});
+app.use(reportRoutes);
+app.use(targetologRoutes);
 
 const start = async () => {
   try {

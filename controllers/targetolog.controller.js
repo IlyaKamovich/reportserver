@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Targetolog } from "../models/tagretolog.js";
+import { Targetolog } from "../models/tagretolog.model.js";
 
 const createTargetolog = async (req, res, next) => {
   try {
@@ -9,7 +9,6 @@ const createTargetolog = async (req, res, next) => {
     if (!source) res.status(400).json({ error: "Field source is required" });
 
     const newTargetolog = await Targetolog.create({
-      _id: new mongoose.Types.ObjectId(),
       name: name,
       source: source,
     });
