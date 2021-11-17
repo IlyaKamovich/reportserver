@@ -20,7 +20,16 @@ const createReport = async (req, res, next) => {
   }
 };
 
-const getReports = async (req, res, next) => {
+const getAllReports = async (req, res, next) => {
+  try {
+    const reports = await Report.find();
+    res.status(200).json({ reports });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+};
+
+const getReportsByFilter = async (req, res, next) => {
   const { source, startWith, endOn } = req.query;
 
   try {
@@ -41,4 +50,4 @@ const getReports = async (req, res, next) => {
   }
 };
 
-export { createReport, getReports };
+export { createReport, getReportsByFilter, getAllReports };

@@ -19,6 +19,15 @@ const createTargetolog = async (req, res, next) => {
   }
 };
 
+const getAllTargetologs = async (req, res, next) => {
+  try {
+    const targetologs = await Targetolog.find();
+    res.status(200).json({ targetologs });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+};
+
 const getTargetologsBySource = async (source) => {
   try {
     return await Targetolog.find({ source: source });
@@ -27,4 +36,4 @@ const getTargetologsBySource = async (source) => {
   }
 };
 
-export { createTargetolog, getTargetologsBySource };
+export { createTargetolog, getTargetologsBySource, getAllTargetologs };
