@@ -3,7 +3,7 @@ import { createTargetolog, getAllTargetologs } from "../controllers/targetolog.c
 
 const router = express.Router();
 
-router.post("/createTargetolog", createTargetolog);
-router.get("/getAllTargetologs", getAllTargetologs);
+router.post("/newTargetolog", createTargetolog);
+router.get("/allTargetologs", getAllTargetologs);
 
 export default router;

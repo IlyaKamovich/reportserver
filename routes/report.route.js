@@ -4,7 +4,7 @@ import { createReport, getAllReports, getReportsByFilter } from "../controllers/
 const router = express.Router();
 
 router.post("/createReport", createReport);
-router.get("/getReportsByFilter", getReportsByFilter);
-router.get("/getAllReports", getAllReports);
+router.get("/reportsByFilter", getReportsByFilter);
+router.get("/allReports", getAllReports);
 
 export default router;
