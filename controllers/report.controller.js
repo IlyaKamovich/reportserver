@@ -1,5 +1,6 @@
+import { ReportHelpers } from "../helpers/report.helper.js";
 import { Report } from "../models/report.model.js";
-import { getTargetologsBySource } from "./targetolog.controller.js";
+import { getTargetologsData } from "./targetolog.controller.js";
 
 const createReport = async (req, res, next) => {
   try {
@@ -20,34 +21,49 @@ const createReport = async (req, res, next) => {
   }
 };
 
-const getAllReports = async (req, res, next) => {
+const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
   try {
-    const reports = await Report.find();
-    res.status(200).json({ reports });
+    let reports;
+
+    if (!targetologIds || !dateStartWith || !dateEndOn) {
+      reports = await Report.find().lean();
+      return reports;
+    }
+
+    reports = await Report.find({
+      targetologId: { $in: targetologIds },
+      date: {
+        $gte: dateStartWith,
+        $lte: dateEndOn,
+      },
+    }).lean();
+    return reports;
   } catch (e) {
-    res.status(400).json({ error: e.message });
+    throw new Error(e.message);
   }
 };
 
-const getReportsByFilter = async (req, res, next) => {
+const getReports = async (req, res, next) => {
   const { source, startWith, endOn } = req.query;
 
   try {
-    const targetologs = await getTargetologsBySource(source);
+    if (!source || !startWith || !endOn) {
+      const targetologs = await getTargetologsData();
+      const reports = await getReportsData();
+
+      const currentReports = ReportHelpers.getReportsWithFormattedDateAndTargetologsNames(reports, targetologs);
+      res.status(200).json({ reports: currentReports });
+    }
+
+    const targetologs = await getTargetologsData(source);
     const targetologIds = targetologs.map((targetolog) => targetolog._id);
 
-    const reports = await Report.find({
-      targetologId: { $in: targetologIds },
-      date: {
-        $gte: startWith,
-        $lte: endOn,
-      },
-    });
-
-    res.status(200).json({ reports });
+    const reports = await getReportsData(targetologIds, startWith, endOn);
+    const currentReports = ReportHelpers.getReportsWithFormattedDateAndTargetologsNames(reports, targetologs);
+    res.status(200).json({ reports: currentReports });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
 };
 
-export { createReport, getReportsByFilter, getAllReports };
+export { createReport, getReports };

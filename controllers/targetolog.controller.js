@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Targetolog } from "../models/tagretolog.model.js";
 
 const createTargetolog = async (req, res, next) => {
@@ -19,21 +18,20 @@ const createTargetolog = async (req, res, next) => {
   }
 };
 
-const getAllTargetologs = async (req, res, next) => {
+const getTargetologsData = async (source) => {
   try {
-    const targetologs = await Targetolog.find();
-    res.status(200).json({ targetologs });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-};
+    let targetologs;
 
-const getTargetologsBySource = async (source) => {
-  try {
-    return await Targetolog.find({ source: source });
+    if (source) {
+      targetologs = await Targetolog.find({ source: source }).lean();
+      return targetologs;
+    }
+
+    targetologs = await Targetolog.find().lean();
+    return targetologs;
   } catch (e) {
     throw new Error(e.message);
   }
 };
 
-export { createTargetolog, getTargetologsBySource, getAllTargetologs };
+export { createTargetolog, getTargetologsData };

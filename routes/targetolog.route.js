@@ -1,9 +1,8 @@
 import express from "express";
-import { createTargetolog, getAllTargetologs } from "../controllers/targetolog.controller.js";
+import { createTargetolog } from "../controllers/targetolog.controller.js";
 
 const router = express.Router();
 
-router.post("/newTargetolog", createTargetolog);
-router.get("/allTargetologs", getAllTargetologs);
+router.post("/targetolog", createTargetolog);
 
 export default router;
