@@ -1,10 +1,16 @@
 class QueryHelper {
-  static formatFilter = (queryParams, targetologs) => {
+  static targetologFilter = (queryParams) => {
     let query = {};
 
     if (queryParams.source) {
       query = { ...query, source: queryParams.source };
     }
+
+    return query;
+  };
+
+  static reportFilter = (queryParams, targetologs) => {
+    let query = {};
 
     if (targetologs) {
       const targetologIds = targetologs.map((targetolog) => targetolog._id);
