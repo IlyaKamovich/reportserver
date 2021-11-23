@@ -1,3 +1,4 @@
+import _split from "lodash/split.js";
 import { ReportHelpers } from "../helpers/report.helper.js";
 import { Report } from "../models/report.model.js";
 import { getTargetologsData } from "./targetolog.controller.js";
@@ -26,7 +27,7 @@ const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
     const query = {};
     const date = {};
 
-    if (targetologIds) query["targetologId"] = { $in: _.split(targetologIds, ",") };
+    if (targetologIds) query["targetologId"] = { $in: _split(targetologIds, ",") };
     if (dateStartWith) date["$gte"] = dateStartWith;
     if (dateEndOn) date["$lte"] = dateEndOn;
     if (date.$gte || date.$lte) query["date"] = { ...date };
