@@ -1,18 +1,11 @@
-import { Report } from "../models/report.model.js";
-import { getTargetologsBySource } from "./targetolog.controller.js";
+import { ReportHelpers } from "../helpers/report.helper.js";
+import { TargetologHelper } from "../helpers/targetolog.hepler.js";
+import { getTargetologsByFilter } from "../services/tagetolog.service.js";
+import { createNewReport, getReportsByFilter } from "../services/report.service.js";
 
-const createReport = async (req, res, next) => {
+export const addNewReport = async (req, res, next) => {
   try {
-    const { date, targetologId, metrics } = req.body;
-
-    const newReport = await Report.create({
-      date: date,
-      targetologId: targetologId,
-      metrics: {
-        conversions: metrics.conversions,
-        cpi: metrics.cpi,
-      },
-    });
+    const newReport = await createNewReport(req.body);
 
     res.status(200).json({ newReport });
   } catch (e) {
@@ -20,34 +13,19 @@ const createReport = async (req, res, next) => {
   }
 };
 
-const getAllReports = async (req, res, next) => {
+export const getReports = async (req, res, next) => {
   try {
-    const reports = await Report.find();
-    res.status(200).json({ reports });
+    const targetologsQuery = TargetologHelper.filterTargetologQuery(req.query);
+    const targetologs = await getTargetologsByFilter(targetologsQuery);
+
+    const reportsQuery = ReportHelpers.filterReportQuery(req.query, targetologs);
+    const reports = await getReportsByFilter(reportsQuery);
+
+    const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
+    const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);
+
+    res.status(200).json({ reports: reportsWithMappedTargetologs });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
 };
-
-const getReportsByFilter = async (req, res, next) => {
-  const { source, startWith, endOn } = req.query;
-
-  try {
-    const targetologs = await getTargetologsBySource(source);
-    const targetologIds = targetologs.map((targetolog) => targetolog._id);
-
-    const reports = await Report.find({
-      targetologId: { $in: targetologIds },
-      date: {
-        $gte: startWith,
-        $lte: endOn,
-      },
-    });
-
-    res.status(200).json({ reports });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-};
-
-export { createReport, getReportsByFilter, getAllReports };

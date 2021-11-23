@@ -10,6 +10,4 @@ const ReportSchema = new Schema({
   },
 });
 
-const Report = mongoose.model("reports", ReportSchema);
-
-export { Report };
+export const Report = mongoose.model("reports", ReportSchema);
