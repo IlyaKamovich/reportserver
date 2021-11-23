@@ -1,20 +1,10 @@
-import { QueryHelper } from "../helpers/query.helper.js";
 import { ReportHelpers } from "../helpers/report.helper.js";
-import { Report } from "../models/report.model.js";
-import { getTargetologs } from "./targetolog.controller.js";
+import { getTargetologsByFilter } from "../services/tagetolog.service.js";
+import { createNewReport, getReportsByFilter } from "../services/report.service.js";
 
-const createReport = async (req, res, next) => {
+export const addNewReport = async (req, res, next) => {
   try {
-    const { date, targetologId, metrics } = req.body;
-
-    const newReport = await Report.create({
-      date: date,
-      targetologId: targetologId,
-      metrics: {
-        conversions: metrics.conversions,
-        cpi: metrics.cpi,
-      },
-    });
+    const newReport = await createNewReport(req.body);
 
     res.status(200).json({ newReport });
   } catch (e) {
@@ -22,27 +12,16 @@ const createReport = async (req, res, next) => {
   }
 };
 
-const getReportsData = async (queryParams, targetologIds) => {
+export const getReports = async (req, res, next) => {
   try {
-    const query = QueryHelper.formatFilter(queryParams, targetologIds);
-    const reports = await Report.find(query).lean();
+    const targetologs = await getTargetologsByFilter(req.query);
+    const reports = await getReportsByFilter(req.query, targetologs);
 
-    return reports;
+    const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
+    const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);
+
+    res.status(200).json({ reports: reportsWithMappedTargetologs });
   } catch (e) {
-    throw new Error(e.message);
+    res.status(400).json({ error: e.message });
   }
 };
-
-const getReports = async (req, res, next) => {
-  const targetologs = await getTargetologs(req.query);
-  const targetologIds = targetologs.map((targetolog) => targetolog._id);
-
-  const reports = await getReportsData(req.query, targetologIds);
-
-  const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
-  const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);
-
-  res.status(200).json({ reports: reportsWithMappedTargetologs });
-};
-
-export { createReport, getReports };

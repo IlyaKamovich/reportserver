@@ -1,15 +1,14 @@
-import _split from "lodash/split.js";
-
 class QueryHelper {
-  static formatFilter = (queryParams, targetologIds) => {
+  static formatFilter = (queryParams, targetologs) => {
     let query = {};
 
     if (queryParams.source) {
       query = { ...query, source: queryParams.source };
     }
 
-    if (targetologIds) {
-      query = { ...query, targetologId: { $in: _split(targetologIds, ",") } };
+    if (targetologs) {
+      const targetologIds = targetologs.map((targetolog) => targetolog._id);
+      query = { ...query, targetologId: { $in: targetologIds } };
     }
 
     if (queryParams.startWith) {
