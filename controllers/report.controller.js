@@ -1,11 +1,18 @@
-import { ReportHelpers } from "../helpers/report.helper.js";
-import { TargetologHelper } from "../helpers/targetolog.hepler.js";
-import { getTargetologsByFilter } from "../services/tagetolog.service.js";
-import { createNewReport, getReportsByFilter } from "../services/report.service.js";
+import { Report } from "../models/report.model.js";
+import { getTargetologsBySource } from "./targetolog.controller.js";
 
-export const addNewReport = async (req, res, next) => {
+const createReport = async (req, res, next) => {
   try {
-    const newReport = await createNewReport(req.body);
+    const { date, targetologId, metrics } = req.body;
+
+    const newReport = await Report.create({
+      date: date,
+      targetologId: targetologId,
+      metrics: {
+        conversions: metrics.conversions,
+        cpi: metrics.cpi,
+      },
+    });
 
     res.status(200).json({ newReport });
   } catch (e) {
@@ -13,19 +20,25 @@ export const addNewReport = async (req, res, next) => {
   }
 };
 
-export const getReports = async (req, res, next) => {
+const getReports = async (req, res, next) => {
+  const { source, startWith, endOn } = req.query;
+
   try {
-    const targetologsQuery = TargetologHelper.filterTargetologQuery(req.query);
-    const targetologs = await getTargetologsByFilter(targetologsQuery);
+    const targetologs = await getTargetologsBySource(source);
+    const targetologIds = targetologs.map((targetolog) => targetolog._id);
 
-    const reportsQuery = ReportHelpers.filterReportQuery(req.query, targetologs);
-    const reports = await getReportsByFilter(reportsQuery);
+    const reports = await Report.find({
+      targetologId: { $in: targetologIds },
+      date: {
+        $gte: startWith,
+        $lte: endOn,
+      },
+    });
 
-    const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
-    const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);
-
-    res.status(200).json({ reports: reportsWithMappedTargetologs });
+    res.status(200).json({ reports });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
 };
+
+export { createReport, getReports };
