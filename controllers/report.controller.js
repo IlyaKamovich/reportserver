@@ -1,6 +1,7 @@
+import { QueryHelper } from "../helpers/query.helper.js";
 import { ReportHelpers } from "../helpers/report.helper.js";
 import { Report } from "../models/report.model.js";
-import { getTargetologsData } from "./targetolog.controller.js";
+import { getTargetologs } from "./targetolog.controller.js";
 
 const createReport = async (req, res, next) => {
   try {
@@ -21,17 +22,11 @@ const createReport = async (req, res, next) => {
   }
 };
 
-const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
+const getReportsData = async (queryParams, targetologIds) => {
   try {
-    const query = {};
-    const date = {};
-
-    if (targetologIds) query["targetologId"] = { $in: _.split(targetologIds, ",") };
-    if (dateStartWith) date["$gte"] = dateStartWith;
-    if (dateEndOn) date["$lte"] = dateEndOn;
-    if (date.$gte || date.$lte) query["date"] = { ...date };
-
+    const query = QueryHelper.formatFilter(queryParams, targetologIds);
     const reports = await Report.find(query).lean();
+
     return reports;
   } catch (e) {
     throw new Error(e.message);
@@ -39,12 +34,10 @@ const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
 };
 
 const getReports = async (req, res, next) => {
-  const { source, startWith, endOn } = req.query;
-
-  const targetologs = await getTargetologsData(source);
+  const targetologs = await getTargetologs(req.query);
   const targetologIds = targetologs.map((targetolog) => targetolog._id);
 
-  const reports = await getReportsData(targetologIds, startWith, endOn);
+  const reports = await getReportsData(req.query, targetologIds);
 
   const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
   const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);

@@ -1,3 +1,4 @@
+import { QueryHelper } from "../helpers/query.helper.js";
 import { Targetolog } from "../models/tagretolog.model.js";
 
 const createTargetolog = async (req, res, next) => {
@@ -18,16 +19,15 @@ const createTargetolog = async (req, res, next) => {
   }
 };
 
-const getTargetologsData = async (source) => {
+const getTargetologs = async (queryParams) => {
   try {
-    let query = {};
-    if (source) query["source"] = source;
-
+    const query = QueryHelper.formatFilter(queryParams);
     const targetologs = await Targetolog.find(query).lean();
+
     return targetologs;
   } catch (e) {
     throw new Error(e.message);
   }
 };
 
-export { createTargetolog, getTargetologsData };
+export { createTargetolog, getTargetologs };
