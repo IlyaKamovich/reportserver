@@ -1,6 +1,7 @@
 import { ReportHelpers } from "../helpers/report.helper.js";
 import { getTargetologsByFilter } from "../services/tagetolog.service.js";
 import { createNewReport, getReportsByFilter } from "../services/report.service.js";
+import { QueryHelper } from "../helpers/query.helper.js";
 
 export const addNewReport = async (req, res, next) => {
   try {
@@ -14,8 +15,11 @@ export const addNewReport = async (req, res, next) => {
 
 export const getReports = async (req, res, next) => {
   try {
-    const targetologs = await getTargetologsByFilter(req.query);
-    const reports = await getReportsByFilter(req.query, targetologs);
+    const targetologsQuery = QueryHelper.formatFilter(req.query);
+    const targetologs = await getTargetologsByFilter(targetologsQuery);
+
+    const reportsQuery = QueryHelper.formatFilter(req.query, targetologs);
+    const reports = await getReportsByFilter(reportsQuery);
 
     const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
     const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);

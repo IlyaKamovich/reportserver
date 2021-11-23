@@ -1,24 +1,17 @@
-import { QueryHelper } from "../helpers/query.helper.js";
 import { Targetolog } from "../models/tagretolog.model.js";
 
-export const createNewTagetolog = async (name, source) => {
+export const createNewTagetolog = async (targetologData) => {
   try {
-    const newTargetolog = await Targetolog.create({
-      name: name,
-      source: source,
-    });
-
+    const newTargetolog = await Targetolog.create(targetologData);
     return newTargetolog;
   } catch (e) {
     throw new Error(e.message);
   }
 };
 
-export const getTargetologsByFilter = async (queryParams) => {
+export const getTargetologsByFilter = async (query) => {
   try {
-    const query = QueryHelper.formatFilter(queryParams);
     const targetologs = await Targetolog.find(query).lean();
-
     return targetologs;
   } catch (e) {
     throw new Error(e.message);

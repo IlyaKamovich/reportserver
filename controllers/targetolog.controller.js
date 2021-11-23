@@ -7,7 +7,7 @@ const addNewTargetolog = async (req, res, next) => {
     if (!name) res.status(400).json({ error: "Field name is required" });
     if (!source) res.status(400).json({ error: "Field source is required" });
 
-    const newTargetolog = await createNewTagetolog(name, source);
+    const newTargetolog = await createNewTagetolog(req.body);
 
     res.status(200).json({ newTargetolog });
   } catch (e) {
