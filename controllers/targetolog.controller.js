@@ -20,14 +20,10 @@ const createTargetolog = async (req, res, next) => {
 
 const getTargetologsData = async (source) => {
   try {
-    let targetologs;
+    let query = {};
+    if (source) query["source"] = source;
 
-    if (source) {
-      targetologs = await Targetolog.find({ source: source }).lean();
-      return targetologs;
-    }
-
-    targetologs = await Targetolog.find().lean();
+    const targetologs = await Targetolog.find(query).lean();
     return targetologs;
   } catch (e) {
     throw new Error(e.message);

@@ -23,20 +23,15 @@ const createReport = async (req, res, next) => {
 
 const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
   try {
-    let reports;
+    const query = {};
+    const date = {};
 
-    if (!targetologIds || !dateStartWith || !dateEndOn) {
-      reports = await Report.find().lean();
-      return reports;
-    }
+    if (targetologIds) query["targetologId"] = { $in: _.split(targetologIds, ",") };
+    if (dateStartWith) date["$gte"] = dateStartWith;
+    if (dateEndOn) date["$lte"] = dateEndOn;
+    if (date.$gte || date.$lte) query["date"] = { ...date };
 
-    reports = await Report.find({
-      targetologId: { $in: targetologIds },
-      date: {
-        $gte: dateStartWith,
-        $lte: dateEndOn,
-      },
-    }).lean();
+    const reports = await Report.find(query).lean();
     return reports;
   } catch (e) {
     throw new Error(e.message);
@@ -46,24 +41,15 @@ const getReportsData = async (targetologIds, dateStartWith, dateEndOn) => {
 const getReports = async (req, res, next) => {
   const { source, startWith, endOn } = req.query;
 
-  try {
-    if (!source || !startWith || !endOn) {
-      const targetologs = await getTargetologsData();
-      const reports = await getReportsData();
+  const targetologs = await getTargetologsData(source);
+  const targetologIds = targetologs.map((targetolog) => targetolog._id);
 
-      const currentReports = ReportHelpers.getReportsWithFormattedDateAndTargetologsNames(reports, targetologs);
-      res.status(200).json({ reports: currentReports });
-    }
+  const reports = await getReportsData(targetologIds, startWith, endOn);
 
-    const targetologs = await getTargetologsData(source);
-    const targetologIds = targetologs.map((targetolog) => targetolog._id);
+  const reportsWithFormattedDate = ReportHelpers.formatDate(reports);
+  const reportsWithMappedTargetologs = ReportHelpers.mapTargetologs(reportsWithFormattedDate, targetologs);
 
-    const reports = await getReportsData(targetologIds, startWith, endOn);
-    const currentReports = ReportHelpers.getReportsWithFormattedDateAndTargetologsNames(reports, targetologs);
-    res.status(200).json({ reports: currentReports });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
+  res.status(200).json({ reports: reportsWithMappedTargetologs });
 };
 
 export { createReport, getReports };
