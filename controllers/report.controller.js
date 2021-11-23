@@ -15,10 +15,10 @@ export const addNewReport = async (req, res, next) => {
 
 export const getReports = async (req, res, next) => {
   try {
-    const targetologsQuery = TargetologHelper.targetologQueryFilter(req.query);
+    const targetologsQuery = TargetologHelper.filterTargetologQuery(req.query);
     const targetologs = await getTargetologsByFilter(targetologsQuery);
 
-    const reportsQuery = ReportHelpers.reportQueryFilter(req.query, targetologs);
+    const reportsQuery = ReportHelpers.filterReportQuery(req.query, targetologs);
     const reports = await getReportsByFilter(reportsQuery);
 
     const reportsWithFormattedDate = ReportHelpers.formatDate(reports);

@@ -2,7 +2,7 @@ import moment from "moment";
 import "moment/locale/ru.js";
 moment.locale("ru");
 class ReportHelpers {
-  static reportQueryFilter = (queryParams, targetologs) => {
+  static filterReportQuery = (queryParams, targetologs) => {
     let query = {};
 
     if (targetologs) {

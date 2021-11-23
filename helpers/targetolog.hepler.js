@@ -1,5 +1,5 @@
 class TargetologHelper {
-  static targetologQueryFilter = (queryParams) => {
+  static filterTargetologQuery = (queryParams) => {
     let query = {};
 
     if (queryParams.source) {

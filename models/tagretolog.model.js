@@ -6,6 +6,4 @@ const TargetologSchema = new Schema({
   source: { type: String, required: true },
 });
 
-const Targetolog = mongoose.model("targetolog", TargetologSchema);
-
-export { Targetolog };
+export const Targetolog = mongoose.model("targetolog", TargetologSchema);
